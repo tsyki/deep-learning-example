@@ -22,6 +22,14 @@ def relu(x):
 def identity_function(x):
     return x
 
+def softmax(a):
+    c = np.max(a)
+    exp_a = np.exp(a - c) #オーバーフロー対策で入力値の最大値を引いておく
+    sum_exp_a = np.sum(exp_a)
+    y = exp_a / sum_exp_a
+    return y
+    
+
 def show_step_function_sample():
     x = np.arange(-5.0,5.0,0.1)
     y = step_function(x)
@@ -73,7 +81,9 @@ def forward(network, x):
     z2 = sigmoid(a2)
     print('z2:' + str(z2)) #2層の出力結果
     a3 = np.dot(z2, W3) + b3
-    y = identity_function(a3)
+    #回帰問題は恒等関数、分類問題はソフトマックス関数を使う
+    #y = identity_function(a3)
+    y = softmax(a3)
     
     return y
 
