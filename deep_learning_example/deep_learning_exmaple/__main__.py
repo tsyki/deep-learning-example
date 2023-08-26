@@ -4,6 +4,7 @@ import numpy as np
 import perceptron as per
 import neural_network as nn
 import minst_loader as miload
+import predict_by_sample_data as predictsample
 
 def main():
     print('AND(1,1):' + str(per.AND(1, 1)))
@@ -22,7 +23,7 @@ def main():
     nn.show_relu_function_sample()
     nn.show_sample_network()
     miload.load_image()
-
+    predictsample.print_predict_sample()
 
 if __name__ == "__main__":
     main()
