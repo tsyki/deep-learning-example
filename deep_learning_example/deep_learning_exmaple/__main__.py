@@ -23,6 +23,7 @@ def main():
     nn.show_relu_function_sample()
     nn.show_sample_network()
     miload.load_image()
+    predictsample.print_predict_sample_first()
     predictsample.print_predict_sample()
 
 if __name__ == "__main__":

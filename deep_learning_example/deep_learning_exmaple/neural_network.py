@@ -13,7 +13,17 @@ def step_function_simple(x):
 def step_function(x):
     return np.array(x>0 , dtype=np.int32)
 
+@np.vectorize
 def sigmoid(x):
+    #オーバーフロー対策
+    #参考：https://www.kamishima.net/mlmpyja/lr/sigmoid.html
+    sigmoid_range = 34.538776394910684
+
+    if x <= -sigmoid_range:
+        return 1e-15
+    if x >= sigmoid_range:
+        return 1.0 - 1e-15
+    
     return 1 / (1 + np.exp(-x))
 
 def relu(x):

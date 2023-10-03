@@ -17,6 +17,11 @@ def image_show(img):
     pil_img = Image.fromarray(np.uint8(img))
     pil_img.show()
 
+def load_image_by_array(img):
+    img = img.reshape(28,28) #形状を元の画像サイズに変形
+    image_show(img)
+    
+
 def load_image():
     img = x_train[0]
     label = t_train[0]
