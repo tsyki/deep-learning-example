@@ -18,6 +18,7 @@ def main():
     b = -0.7
     print('perceptron sample:' +str(np.sum(w*x) + b))
     
+    #3章 ニューラルネットワーク
     nn.show_step_function_sample()
     nn.show_sigmoid_function_sample()
     nn.show_relu_function_sample()
@@ -25,6 +26,10 @@ def main():
     miload.load_image()
     predictsample.print_predict_sample_first()
     predictsample.print_predict_sample()
+
+    #4章 ニューラルネットワークの学習
+    nn.show_sample_sum_squared_error()
+    nn.show_sample_cross_entropy_error()
 
 if __name__ == "__main__":
     main()

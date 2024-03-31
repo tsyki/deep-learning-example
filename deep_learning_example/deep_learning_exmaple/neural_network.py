@@ -39,6 +39,26 @@ def softmax(a):
     y = exp_a / sum_exp_a
     return y
     
+# 2乗和誤差。値が小さいほど正解に近い
+# y=ニューラルネットワークの出力、t=教師データの想定
+def sum_squared_error(y,t):
+    return 0.5 * np.sum((y-t) ** 2)
+
+def show_sample_sum_squared_error():
+    t = [0,0,1,0,0,0,0,0,0,0]
+    y = [0.1 , 0.05 , 0.6 , 0.0 , 0.05 , 0.1 , 0.0 , 0.1 , 0.0 , 0.0]
+    print('2乗和誤差:' + str( sum_squared_error(np.array(y), np.array(t)) ))
+
+# 交差エントロピー誤差。値が小さいほど正解に近い
+# y=ニューラルネットワークの出力、t=教師データの想定
+def cross_entropy_error(y,t):
+    delta = 1e-7
+    return -np.sum(t * np.log(y+delta))
+
+def show_sample_cross_entropy_error():
+    t = [0,0,1,0,0,0,0,0,0,0]
+    y = [0.1 , 0.05 , 0.6 , 0.0 , 0.05 , 0.1 , 0.0 , 0.1 , 0.0 , 0.0]
+    print('交差エントロピー誤差:' + str( cross_entropy_error(np.array(y), np.array(t)) ))
 
 def show_step_function_sample():
     x = np.arange(-5.0,5.0,0.1)
