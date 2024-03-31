@@ -6,12 +6,16 @@ import numpy as np
 from dataset.mnist import load_mnist
 from PIL import Image
 
-(x_train, t_train), (x_test, t_test) = \
-    load_mnist(flatten=True, normalize=False)
-print('x_train.shape:' + str(x_train.shape))
-print('t_train.shape:' + str(t_train.shape))
-print('x_test.shape:' + str(x_test.shape))
-print('t_test.shape:' + str(t_test.shape))
+# XXX 引数名と仮引数名が重複する場合ってどうするもの？
+def get_training_data(normalize_,flatten_, one_hot_label_):
+    (x_train, t_train), (x_test, t_test) = \
+        load_mnist(normalize=normalize_,flatten =flatten_,one_hot_label=one_hot_label_)
+    return x_train, t_train
+
+def get_test_data(normalize_,flatten_, one_hot_label_):
+    (x_train, t_train), (x_test, t_test) = \
+        load_mnist(normalize=normalize_,flatten =flatten_,one_hot_label=one_hot_label_)
+    return x_test, t_test
 
 def image_show(img):
     pil_img = Image.fromarray(np.uint8(img))
@@ -23,6 +27,7 @@ def load_image_by_array(img):
     
 
 def load_image():
+    x_train,t_train = get_training_data(False,True,False)
     img = x_train[0]
     label = t_train[0]
     print('t_train[0](label):' + str(label))

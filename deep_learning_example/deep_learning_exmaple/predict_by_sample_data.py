@@ -1,16 +1,10 @@
 import sys, os
 sys.path.append(os.pardir)
 import numpy as np
-from dataset.mnist import load_mnist
 import neural_network as nn
 import minst_loader as miload
 import pickle
 
-# XXX 引数名と仮引数名が重複する場合ってどうするもの？
-def get_data(normalize_):
-    (x_train, t_train), (x_test, t_test) = \
-        load_mnist(normalize=normalize_,flatten =True,one_hot_label=False)
-    return x_test, t_test
 
 def init_netowork():
     with open("dataset\sample_weight.pkl",'rb') as f:
@@ -30,7 +24,7 @@ def predict(network, x):
     return y
 
 def print_predict_sample():
-    x,t=get_data(True)
+    x,t= miload.get_test_data(True, True, False)
     network = init_netowork()
     
     accuracy_cnt = 0
@@ -45,7 +39,7 @@ def print_predict_sample():
     
 #動作確認用に1つ目のテストデータと各層の重みとバイアスを表示する    
 def print_predict_sample_first():
-    x_all,t_all=get_data(False)
+    x_all,t_all = miload.get_test_data(False, True, False)
     x=x_all[0]
     miload.load_image_by_array(x)
     network = init_netowork()
