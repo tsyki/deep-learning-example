@@ -80,6 +80,47 @@ def show_sample_cross_entropy_error_batch():
     y = [0.1 , 0.05 , 0.6 , 0.0 , 0.05 , 0.1 , 0.0 , 0.1 , 0.0 , 0.0]
     print('交差エントロピー誤差(1要素):' + str( cross_entropy_error(np.array(y), np.array(t)) ))
 
+#数値微分
+def numerical_diff(f,x):
+    h = 1e-4 #0.001
+    return (f(x+h) - f(x-h)) / (2*h)
+
+#未知数が1つの方程式
+#y=0.01x^2 + 0.1x
+def function_1(x):
+    return 0.01*x**2 + 0.1*x;
+
+def show_numerical_diff_sample():
+    print('y=0.01x^2 + 0.1x のx=5の時の微分' + str(numerical_diff(function_1, 5)))
+
+
+#偏微分
+def numerical_gradient(f,x):
+    h = 1e-4 #0.001
+    grad = np.zeros_like(x) #xと同じ形状で各要素の値が0の配列を生成
+    for idx in range(x.size):
+        tmp_val = x[idx]
+        #f(x+h)の計算
+        x[idx] = tmp_val + h
+        fxh1 = f(x)
+        
+        #f(x+h)の計算
+        x[idx] = tmp_val - h
+        fxh2 = f(x)
+        
+        grad[idx] = (fxh1 - fxh2) / (2*h)
+        x[idx] = tmp_val 
+    
+    return grad
+
+#未知数が2つの方程式
+#y=x0^2 + x1^2
+def function_2(x):
+    return x[0]**2 + x[1]**2;
+
+def show_numerical_gradient_sample():
+    print('y=x0^2 + x1^2 のx0=3,x1=4の時の勾配' + str(numerical_gradient(function_2, np.array([3.0,4.0]))))
+
 
 def show_step_function_sample():
     x = np.arange(-5.0,5.0,0.1)

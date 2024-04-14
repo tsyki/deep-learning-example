@@ -32,6 +32,9 @@ def main():
     nn.show_sample_sum_squared_error()
     #交差エントロピー誤差
     nn.show_sample_cross_entropy_error_batch()
+    nn.show_numerical_diff_sample()
+    #勾配
+    nn.show_numerical_gradient_sample()
     
 
 if __name__ == "__main__":
