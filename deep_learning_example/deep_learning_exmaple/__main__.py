@@ -28,8 +28,11 @@ def main():
     predictsample.print_predict_sample()
 
     #4章 ニューラルネットワークの学習
+    #2乗和誤差
     nn.show_sample_sum_squared_error()
-    nn.show_sample_cross_entropy_error()
+    #交差エントロピー誤差
+    nn.show_sample_cross_entropy_error_batch()
+    
 
 if __name__ == "__main__":
     main()

@@ -51,14 +51,35 @@ def show_sample_sum_squared_error():
 
 # 交差エントロピー誤差。値が小さいほど正解に近い
 # y=ニューラルネットワークの出力、t=教師データの想定
-def cross_entropy_error(y,t):
+def cross_entropy_error_simple(y,t):
     delta = 1e-7
     return -np.sum(t * np.log(y+delta))
 
-def show_sample_cross_entropy_error():
+def cross_entropy_error(y,t):
+    delta = 1e-7
+    #ndim=次元数=多次元配列の要素数。1要素の場合、[1,2,3]→[[1,2,3]]のように変換
+    if y.ndim == 1:
+        t = t.reshape(1, t.size)
+        y = y.reshape(1, y.size)
+    batch_size = y.shape[0]
+    return -np.sum(t * np.log(y+delta)) / batch_size
+
+
+def show_sample_cross_entropy_error_simple():
     t = [0,0,1,0,0,0,0,0,0,0]
     y = [0.1 , 0.05 , 0.6 , 0.0 , 0.05 , 0.1 , 0.0 , 0.1 , 0.0 , 0.0]
-    print('交差エントロピー誤差:' + str( cross_entropy_error(np.array(y), np.array(t)) ))
+    print('交差エントロピー誤差:' + str( cross_entropy_error_simple(np.array(y), np.array(t)) ))
+
+def show_sample_cross_entropy_error_batch():
+    t = np.array([[0,0,1,0,0,0,0,0,0,0],[1,0,0,0,0,0,0,0,0,0]])
+    y = np.array([[0.1 , 0.05 , 0.6 , 0.0 , 0.05 , 0.1 , 0.0 , 0.1 , 0.0 , 0.0],
+                 [0.9 , 0.1 , 0.0 , 0.0 , 0.0 , 0.0 , 0.0 , 0.0 , 0.0 , 0.0]
+                 ])
+    print('交差エントロピー誤差(2要素):' + str( cross_entropy_error(np.array(y), np.array(t)) ))
+    t = [0,0,1,0,0,0,0,0,0,0]
+    y = [0.1 , 0.05 , 0.6 , 0.0 , 0.05 , 0.1 , 0.0 , 0.1 , 0.0 , 0.0]
+    print('交差エントロピー誤差(1要素):' + str( cross_entropy_error(np.array(y), np.array(t)) ))
+
 
 def show_step_function_sample():
     x = np.arange(-5.0,5.0,0.1)
