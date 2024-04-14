@@ -6,6 +6,9 @@ import numpy as np
 from dataset.mnist import load_mnist
 from PIL import Image
 
+#動作確認時はTrueにする
+show_img = False
+
 # XXX 引数名と仮引数名が重複する場合ってどうするもの？
 def get_training_data(normalize_,flatten_, one_hot_label_):
     (x_train, t_train), (x_test, t_test) = \
@@ -19,7 +22,10 @@ def get_test_data(normalize_,flatten_, one_hot_label_):
 
 def image_show(img):
     pil_img = Image.fromarray(np.uint8(img))
-    pil_img.show()
+    if show_img == True:
+        pil_img.show()
+    else:
+        print('画像表示はスキップ')
 
 def load_image_by_array(img):
     img = img.reshape(28,28) #形状を元の画像サイズに変形
