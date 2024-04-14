@@ -121,6 +121,26 @@ def function_2(x):
 def show_numerical_gradient_sample():
     print('y=x0^2 + x1^2 のx0=3,x1=4の時の勾配' + str(numerical_gradient(function_2, np.array([3.0,4.0]))))
 
+#勾配降下法
+#lr=学習率
+def gradient_descent(f, init_x, lr=0.01, step_num=100):
+    x = init_x
+    
+    for i in range(step_num):
+        grad = numerical_gradient(f, x)
+        x -= lr * grad
+    
+    return x
+
+def show_gradient_descent_sample():
+    print('y=x0^2 + x1^2 の最小値' + 
+          str(gradient_descent(
+              function_2,
+              init_x = np.array([-3.0,4.0]),
+              lr=0.1,
+              step_num=100
+              )))
+
 
 def show_step_function_sample():
     x = np.arange(-5.0,5.0,0.1)
