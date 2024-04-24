@@ -5,6 +5,7 @@ import perceptron as per
 import neural_network as nn
 import minst_loader as miload
 import predict_by_sample_data as predictsample
+import gradient_simple_network as gsn
 
 def main():
     print('AND(1,1):' + str(per.AND(1, 1)))
@@ -34,9 +35,11 @@ def main():
     nn.show_sample_cross_entropy_error_batch()
     nn.show_numerical_diff_sample()
     #勾配の計算
-    nn.show_numerical_gradient_sample()
+    nn.show_numerical_gradient_1d_sample()
     #勾配降下法での最小値の算出
     nn.show_gradient_descent_sample()
+    #ニューラルネットワークの勾配の算出
+    gsn.show_simple_network()
     
 
 if __name__ == "__main__":

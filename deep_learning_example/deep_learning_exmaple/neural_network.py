@@ -95,7 +95,7 @@ def show_numerical_diff_sample():
 
 
 #偏微分
-def numerical_gradient(f,x):
+def numerical_gradient_1d(f,x):
     h = 1e-4 #0.001
     grad = np.zeros_like(x) #xと同じ形状で各要素の値が0の配列を生成
     for idx in range(x.size):
@@ -113,13 +113,25 @@ def numerical_gradient(f,x):
     
     return grad
 
+def numerical_gradient_2d(f, X):
+    if X.ndim == 1:
+        return numerical_gradient_1d(f, X)
+    else:
+        grad = np.zeros_like(X)
+        
+        for idx, x in enumerate(X):
+            grad[idx] = numerical_gradient_1d(f, x)
+        
+        return grad
+
 #未知数が2つの方程式
 #y=x0^2 + x1^2
 def function_2(x):
     return x[0]**2 + x[1]**2;
 
-def show_numerical_gradient_sample():
-    print('y=x0^2 + x1^2 のx0=3,x1=4の時の勾配' + str(numerical_gradient(function_2, np.array([3.0,4.0]))))
+def show_numerical_gradient_1d_sample():
+    # [6,8]となる
+    print('y=x0^2 + x1^2 のx0=3,x1=4の時の勾配' + str(numerical_gradient_1d(function_2, np.array([3.0,4.0]))))
 
 #勾配降下法
 #lr=学習率
@@ -127,12 +139,13 @@ def gradient_descent(f, init_x, lr=0.01, step_num=100):
     x = init_x
     
     for i in range(step_num):
-        grad = numerical_gradient(f, x)
+        grad = numerical_gradient_1d(f, x)
         x -= lr * grad
     
     return x
 
 def show_gradient_descent_sample():
+    #[-6.11110793e-10  8.14814391e-10]となる
     print('y=x0^2 + x1^2 の最小値' + 
           str(gradient_descent(
               function_2,
