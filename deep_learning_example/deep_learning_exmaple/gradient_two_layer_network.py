@@ -4,6 +4,7 @@ import sys,os
 sys.path.append(os.pardir)
 import numpy as np
 from neural_network import softmax,sigmoid,cross_entropy_error,numerical_gradient_2d
+from minst_loader import load_mnist
 
 class TwoLayerNetwork:
     def __init__(self, input_size, hidden_size, output_size, weight_init_std = 0.01):
@@ -68,3 +69,38 @@ def show_two_layer_network():
 
     grads = net.numerical_gradient(x,t)
     print("勾配=" + str(grads))
+
+def training():
+    # データの読み込み
+    (x_train, t_train), (x_test, t_test) = load_mnist(normalize=True, one_hot_label=True)
+
+    #ハイパーパラメータ
+    iters_num = 10000  # 学習を繰り返す回数
+    train_size = x_train.shape[0] #トレーニングデータの画像ファイル総数
+    batch_size = 10 #一回の学習でまとめて学習する画像ファイル数
+    learning_rate = 0.1
+    
+    #学習経過の保持用
+    train_loss_list= []
+    
+    network = TwoLayerNetwork(input_size=784, hidden_size=50, output_size=10)
+
+    for i in range(iters_num):
+        #トレーニング用の画像の個数から、バッチサイズだけランダムに選択(batch_sizeの要素数の配列ができる)
+        batch_mask = np.random.choice(train_size,batch_size)
+        #上記の添字に対応するデータを取得。(batch_size, input_size)の配列ができる
+        x_batch = x_train[batch_mask]
+        t_batch = t_train[batch_mask]
+        
+        #各画像データの勾配を計算
+        grads = network.numerical_gradient(x_batch,t_batch)
+        
+        #パラメータを更新
+        for key in ('W1','b1','W2','b2'):
+            network.params[key] -= learning_rate * grads[key]
+        #学習経過の記録
+        loss = network.loss(x_batch, t_batch)
+        train_loss_list.append(loss)
+        print(str(i+1) +  "回目の学習終了 loss=" + str(loss))    
+
+    print(train_loss_list)    

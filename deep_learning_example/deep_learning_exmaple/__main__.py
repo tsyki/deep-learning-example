@@ -42,6 +42,8 @@ def main():
     #ニューラルネットワークの勾配の算出
     gsn.show_simple_network()
     gtln.show_two_layer_network()
+    #ニューラルネットワークを使った学習
+    gtln.training()
     
 
 if __name__ == "__main__":

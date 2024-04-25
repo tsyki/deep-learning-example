@@ -104,7 +104,7 @@ def numerical_gradient_1d(f,x):
         x[idx] = tmp_val + h
         fxh1 = f(x)
         
-        #f(x+h)の計算
+        #f(x-h)の計算
         x[idx] = tmp_val - h
         fxh2 = f(x)
         
