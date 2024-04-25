@@ -6,6 +6,7 @@ import neural_network as nn
 import minst_loader as miload
 import predict_by_sample_data as predictsample
 import gradient_simple_network as gsn
+import gradient_two_layer_network as gtln
 
 def main():
     print('AND(1,1):' + str(per.AND(1, 1)))
@@ -40,6 +41,7 @@ def main():
     nn.show_gradient_descent_sample()
     #ニューラルネットワークの勾配の算出
     gsn.show_simple_network()
+    gtln.show_two_layer_network()
     
 
 if __name__ == "__main__":
