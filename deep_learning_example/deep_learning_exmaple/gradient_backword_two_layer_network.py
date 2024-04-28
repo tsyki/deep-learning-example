@@ -262,7 +262,7 @@ def training():
     (x_train, t_train), (x_test, t_test) = load_mnist(normalize=True, one_hot_label=True)
 
     #ハイパーパラメータ
-    iters_num = 100  # 学習を繰り返す回数
+    iters_num = 1000  # 学習を繰り返す回数
     train_size = x_train.shape[0] #トレーニングデータの画像ファイル総数
     batch_size = 100 #一回の学習でまとめて学習する画像ファイル数
     learning_rate = 0.1
@@ -289,8 +289,9 @@ def training():
         #学習経過の記録
         loss = network.loss(x_batch, t_batch)
         accuracy = network.accuracy(x_batch, t_batch)
-        train_loss_list.append(str(loss) +" " + str(accuracy))
-        print(i+1,"回目の学習終了 loss=" ,loss," accuracy=", accuracy )    
+        if (i+1) %100 == 0:
+            train_loss_list.append(str(loss) +" " + str(accuracy))
+            print(i+1,"回目の学習終了 loss=" ,loss," accuracy=", accuracy )    
 
     print(train_loss_list)
 
@@ -299,6 +300,7 @@ def show_diff():
     (x_train, t_train), (x_test, t_test) = load_mnist(normalize=True, one_hot_label=True)
     network = BackwordTwoLayerNetwork(input_size=784, hidden_size=50, output_size=10)
     
+    #0～3番目までの値を取得
     x_batch = x_train[:3]
     t_batch = t_train[:3]
     
