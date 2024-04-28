@@ -7,7 +7,7 @@ import minst_loader as miload
 import predict_by_sample_data as predictsample
 import gradient_simple_network as gsn
 import gradient_two_layer_network as gtln
-import backword as back
+import gradient_backword_two_layer_network as gbtln
 
 def main():
     print('AND(1,1):' + str(per.AND(1, 1)))
@@ -42,13 +42,15 @@ def main():
     nn.show_gradient_descent_sample()
     #ニューラルネットワークの勾配の算出
     gsn.show_simple_network()
-    gtln.show_two_layer_network()
+    #処理が重いのでコメントアウト
+    #gtln.show_two_layer_network()
     #ニューラルネットワークを使った学習
-    gtln.training()
+    #処理が重いのでコメントアウト
+    #gtln.training()
     #計算グラフによる逆伝播の計算
-    back.show_add_and_multi_layer()
+    gbtln.show_add_and_multi_layer()
     #逆伝播法を使った学習
-    back.training()
+    gbtln.training()
     
 
 if __name__ == "__main__":
