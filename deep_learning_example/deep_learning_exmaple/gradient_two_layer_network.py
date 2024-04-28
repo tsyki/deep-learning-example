@@ -92,7 +92,7 @@ def training():
         x_batch = x_train[batch_mask]
         t_batch = t_train[batch_mask]
         
-        #各画像データの勾配を計算
+        #各画像データの損失関数を計算し、勾配を取得
         grads = network.numerical_gradient(x_batch,t_batch)
         
         #パラメータを更新
