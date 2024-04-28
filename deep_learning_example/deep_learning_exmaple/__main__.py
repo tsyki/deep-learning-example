@@ -47,6 +47,8 @@ def main():
     gtln.training()
     #計算グラフによる逆伝播の計算
     back.show_add_and_multi_layer()
+    #逆伝播法を使った学習
+    back.training()
     
 
 if __name__ == "__main__":

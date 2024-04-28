@@ -100,7 +100,8 @@ def training():
             network.params[key] -= learning_rate * grads[key]
         #学習経過の記録
         loss = network.loss(x_batch, t_batch)
-        train_loss_list.append(loss)
-        print(str(i+1) +  "回目の学習終了 loss=" + str(loss))    
+        accuracy = network.accuracy(x_batch, t_batch)
+        train_loss_list.append(str(loss) +" " + str(accuracy))
+        print(i+1,"回目の学習終了 loss=" ,loss," accuracy=", accuracy )    
 
     print(train_loss_list)    
