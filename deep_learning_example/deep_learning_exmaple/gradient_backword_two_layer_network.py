@@ -310,4 +310,137 @@ def show_diff():
     for key in grad_numerical.keys():
         diff = np.average(np.abs(grad_backword[key] - grad_numerical[key]))
         print(key,":", diff)
+
+#計算過程の確認用の小さなニューラルネットワーク。入力層の要素2、隠れ層の要素3、出力層の要素2の想定
+class SimpleBackwordTwoLayerNetwork:
+    def __init__(self, input_size, hidden_size, output_size, weight_init_std = 0.01):
+        self.params = {}
+        #1階層目の重み(要素数=入力層×隠れ層)
+        self.params['W1'] = np.array([[0.1, 0.3, 0.5], [0.2, 0.4, 0.6]])
+        #1階層目のバイアス
+        self.params['b1'] = np.array([0.1, 0.2, 0.3])
+        #2階層目の重み(要素数=隠れ層×出力層の要素数)
+        self.params['W2'] = np.array([[0.1, 0.4], [0.2, 0.5], [0.3, 0.6]])
+        #2階層目のバイアス
+        self.params['b2'] = np.array([0.1, 0.2])
+        #NOTE 以下がレイヤ無し版と異なる
+        #レイヤ作成
+        self.layers = OrderedDict()
+        self.layers['Affine1'] = BatchAffineLayer(self.params['W1'], self.params['b1'])
+        self.layers['Relu1'] = ReluLayer()
+        self.layers['Affine2'] = BatchAffineLayer(self.params['W2'], self.params['b2'])
+        self.lastLayer=SoftmaxAndLossLayer()
     
+    def predict(self,x):
+        print("x=" , x)
+        x = self.layers['Affine1'].forward(x)
+        print("affine1.forward=" , x)
+        x = self.layers['Relu1'].forward(x)
+        print("Relu1.forward=" , x)
+        x = self.layers['Affine2'].forward(x)
+        print("affine2.forward=" , x)
+        return x
+        
+        #レイヤ版
+        #for layer in self.layers.values():
+        #    x = layer.forward(x)
+        #return x
+        
+        #非レイヤ版
+        #W1, W2 = self.params['W1'], self.params['W2']
+        #b1, b2 = self.params['b1'], self.params['b2']
+        #
+        #a1 = np.dot(x, W1) + b1
+        #z1 = sigmoid(a1)
+        #a2 = np.dot(z1, W2) + b2
+        #y = softmax(a2)
+        #return y
+
+    def loss(self,x,t):
+        y = self.predict(x)
+        #NOTE 以下がレイヤ無し版と異なる
+        loss = self.lastLayer.forward(y, t)
+        print("SoftmaxAndLossLayer.forward(=loss)=" , loss)
+        return loss
+    
+    #認識精度
+    def accuracy(self,x,t):
+        y = self.predict(x)
+        # 出力層の最大値=推測した値
+        y = np.argmax(y, axis=1)
+        # 答え
+        t = np.argmax(t, axis=1)
+        # 答えと一致した個数 / 入力要素数
+        accuracy = np.sum(y == t) / float(x.shape[0])
+        return accuracy
+    
+    #各重み、バイアスの勾配を計算
+    #NOTE 学習には利用しないが、レイヤを使った勾配計算の検算に使う
+    def numerical_gradient(self,x,t):
+        def loss_W(W):
+            return self.loss(x,t)
+        grads = {}
+        grads['W1'] = numerical_gradient_2d(loss_W, self.params['W1'])
+        print('grad[W1]=', grads['W1'])
+        grads['b1'] = numerical_gradient_2d(loss_W, self.params['b1'])
+        print('grad[b1]=', grads['b1'])
+        grads['W2'] = numerical_gradient_2d(loss_W, self.params['W2'])
+        print('grad[W2]=', grads['b2'])
+        grads['b2'] = numerical_gradient_2d(loss_W, self.params['b2'])
+        print('grad[b2]=', grads['b2'])
+
+        return grads
+    
+    #新規追加メソッド
+    def backword_gradient(self,x,t):
+        #forward
+        #lastLayer.lossにlossの値が保持される
+        self.loss(x, t)
+        #backward
+        dout=1
+        dout = self.lastLayer.backward(dout)
+        print('SoftmaxAndLossLayer.backword=',dout)
+        
+        dout = self.layers['Affine2'].backward(dout)
+        print("affine2.backward=" , dout)
+
+        dout = self.layers['Relu1'].backward(dout)
+        print("Relu1.backward=" , dout)
+
+        dout = self.layers['Affine1'].backward(dout)
+        print("affine1.backward=" , dout)
+
+        grads = {}
+        grads['W1'] = self.layers['Affine1'].dW
+        print('grad[W1]=', grads['W1'])
+        grads['b1'] = self.layers['Affine1'].db
+        print('grad[b1]=', grads['b1'])
+        grads['W2'] = self.layers['Affine2'].dW
+        print('grad[W2]=', grads['W2'])
+        grads['b2'] = self.layers['Affine2'].db
+        print('grad[b2]=', grads['b2'])
+        
+        return grads
+
+def simple_training():
+    #ハイパーパラメータ
+    iters_num = 100  # 学習を繰り返す回数
+    learning_rate = 0.1
+    
+    #NOTE 逆伝播法のニューラルネットワークを利用
+    network = SimpleBackwordTwoLayerNetwork(input_size=2, hidden_size=3, output_size=2)
+
+    for i in range(iters_num):
+        x = np.array([[1,2], [2,1]]) #入力値
+        t = np.array([[0,1], [1,0]]) #答えラベル
+        
+        #NOTE 誤差逆伝播法で勾配を取得
+        grads = network.backword_gradient(x,t)
+        
+        #パラメータを更新
+        for key in ('W1','b1','W2','b2'):
+            network.params[key] -= learning_rate * grads[key]
+        #学習経過の記録
+        loss = network.loss(x, t)
+        accuracy = network.accuracy(x, t)
+        print(i+1,"回目の学習終了 loss=" ,loss," accuracy=", accuracy )    
