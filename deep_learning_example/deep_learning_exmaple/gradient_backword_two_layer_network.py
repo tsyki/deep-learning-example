@@ -316,7 +316,7 @@ class SimpleBackwordTwoLayerNetwork:
     def __init__(self, input_size, hidden_size, output_size, weight_init_std = 0.01):
         self.params = {}
         #1階層目の重み(要素数=入力層×隠れ層)
-        self.params['W1'] = np.array([[0.1, 0.3, 0.5], [0.2, 0.4, 0.6]])
+        self.params['W1'] = np.array([[0.1, 0.3, 0.5], [0.2, 0.4, -0.6]])
         #1階層目のバイアス
         self.params['b1'] = np.array([0.1, 0.2, 0.3])
         #2階層目の重み(要素数=隠れ層×出力層の要素数)
@@ -431,8 +431,8 @@ def simple_training():
     network = SimpleBackwordTwoLayerNetwork(input_size=2, hidden_size=3, output_size=2)
 
     for i in range(iters_num):
-        x = np.array([[1,2], [2,1]]) #入力値
-        t = np.array([[0,1], [1,0]]) #答えラベル
+        x = np.array([[1,2]]) #入力値
+        t = np.array([[0,1]]) #答えラベル
         
         #NOTE 誤差逆伝播法で勾配を取得
         grads = network.backword_gradient(x,t)
