@@ -3,6 +3,7 @@
 import numpy as np
 import perceptron as per
 import perceptron_training as per_train
+import perceptron_linear_training as per_linear
 import neural_network as nn
 import minst_loader as miload
 import predict_by_sample_data as predictsample
@@ -11,7 +12,8 @@ import gradient_two_layer_network as gtln
 import gradient_backword_two_layer_network as gbtln
 
 def main():
-    per_train.simple_training()
+    #per_train.simple_training_2x()
+    per_linear.simple_training_linear()
     print('AND(1,1):' + str(per.AND(1, 1)))
     print('AND(0,1):' + str(per.AND(0, 1)))
     
