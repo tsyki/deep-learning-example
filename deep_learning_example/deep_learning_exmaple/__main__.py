@@ -14,6 +14,7 @@ import gradient_backword_two_layer_network as gbtln
 def main():
     #per_train.simple_training_2x()
     per_linear.simple_training_linear()
+    input()
     print('AND(1,1):' + str(per.AND(1, 1)))
     print('AND(0,1):' + str(per.AND(0, 1)))
     

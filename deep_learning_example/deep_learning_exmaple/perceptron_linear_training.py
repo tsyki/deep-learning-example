@@ -16,7 +16,7 @@ class SimpleLinearPerceptron:
         #1階層目の重み(要素数=入力層×出力層)
         self.params['W1'] = np.array([0.8, 0.5])
         #1階層目のバイアス
-        self.params['b1'] = np.array([-0.7])
+        self.params['b1'] = np.array([0.7])
     
     def predict(self,x):
         W1 = self.params['W1']
@@ -96,9 +96,14 @@ def simple_training_linear():
     network = SimpleLinearPerceptron(input_size=2, output_size=1)
 
     for i in range(iters_num):
-        
+    
+        #入力を数パターン用意
         x = np.array([[1.0,1.0], [1.0,0.0], [0.0,1.0] , [0.0,0.0] ]) #入力値
         t = np.array([[4],[3],[2],[1]]) #答えラベル 2x1 + x2 + 1の想定
+
+        #入力1種類のみでの検証用
+        #x = np.array([[3.0,1.0]]) #入力値
+        #t = np.array([[8]]) #答えラベル 2x1 + x2 + 1の想定
         
         #NOTE 勾配法で勾配を取得
         grads = network.numerical_gradient(x,t)
