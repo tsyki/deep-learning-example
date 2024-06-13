@@ -10,8 +10,10 @@ import predict_by_sample_data as predictsample
 import gradient_simple_network as gsn
 import gradient_two_layer_network as gtln
 import gradient_backword_two_layer_network as gbtln
+import cnn as cnn
 
 def main():
+    #cnn.show()
     #per_train.simple_training_2x()
     per_linear.simple_training_linear()
     input()
