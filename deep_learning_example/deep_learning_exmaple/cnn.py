@@ -593,6 +593,7 @@ def show():
                         conv_param={'filter_num': 30,
                                     'filter_size': 5, 'pad': 0, 'stride': 1},
                         hidden_size=100, output_size=10, weight_init_std=0.01)
+    #network.load_params("params.pkl")
 
     trainer = Trainer(network, x_train, t_train, x_test, t_test,
                   epochs=max_epochs, mini_batch_size=100,
@@ -600,6 +601,13 @@ def show():
                   evaluate_sample_num_per_epoch=1000)
     trainer.train()
     
+    for n in range (len(network.params['W1'])):
+        print("W1 n=",n)
+        for c in range (len(network.params['W1'][n])):
+            for row in range (len(network.params['W1'][n][c])):
+                for col in range (len(network.params['W1'][n][c][row])):
+                    print(network.params['W1'][n][c][row][col] ,end='  ')
+                print("")
     # パラメータの保存
     network.save_params("params.pkl")
     print("Saved Network Parameters!")
