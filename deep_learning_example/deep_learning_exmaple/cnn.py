@@ -254,6 +254,16 @@ class SimpleConvNet:
 
         # 重みの初期化
         self.params = {}
+
+        #畳み込み層を2つ繋げる場合の例
+        #first_filter_num = 10
+        #first_filter_size = 3
+        #self.params['W0'] = weight_init_std * \
+        #                    np.random.randn(first_filter_num, input_dim[0], first_filter_size, first_filter_size)
+        #self.params['b0'] = np.zeros(first_filter_num)
+        #self.params['W1'] = weight_init_std * \
+        #                    np.random.randn(filter_num, first_filter_num, filter_size, filter_size)
+
         self.params['W1'] = weight_init_std * \
                             np.random.randn(filter_num, input_dim[0], filter_size, filter_size)
         self.params['b1'] = np.zeros(filter_num)
@@ -266,6 +276,10 @@ class SimpleConvNet:
 
         # レイヤの生成
         self.layers = OrderedDict()
+        #畳み込み層を2つ繋げる場合の例
+        #self.layers['Conv0'] = ConvolutionLayer(self.params['W0'], self.params['b0'],
+        #                                   conv_param['stride'], 1)
+        #self.layers['Relu0'] = ReluLayer()
         self.layers['Conv1'] = ConvolutionLayer(self.params['W1'], self.params['b1'],
                                            conv_param['stride'], conv_param['pad'])
         self.layers['Relu1'] = ReluLayer()
@@ -354,6 +368,8 @@ class SimpleConvNet:
 
         # 設定
         grads = {}
+        #畳み込み層を2つ繋げる場合の例
+        #grads['W0'], grads['b0'] = self.layers['Conv0'].dW, self.layers['Conv0'].db
         grads['W1'], grads['b1'] = self.layers['Conv1'].dW, self.layers['Conv1'].db
         grads['W2'], grads['b2'] = self.layers['Affine1'].dW, self.layers['Affine1'].db
         grads['W3'], grads['b3'] = self.layers['Affine2'].dW, self.layers['Affine2'].db
