@@ -293,7 +293,7 @@ def training():
             train_loss_list.append(str(loss) +" " + str(accuracy))
             print(i+1,"回目の学習終了 loss=" ,loss," accuracy=", accuracy )    
 
-    print(train_loss_list)
+    #print(train_loss_list)
 
 #検算
 def show_diff():
