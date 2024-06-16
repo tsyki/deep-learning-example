@@ -243,7 +243,7 @@ class SimpleConvNet:
     """
     def __init__(self, input_dim=(1, 28, 28), 
                  conv_param={'filter_num':30, 'filter_size':5, 'pad':0, 'stride':1},
-                 hidden_size=100, output_size=10, weight_init_std=0.01):
+                 hidden_size=100, output_size=10, weight_init_std=0.01, second_conv=False):
         filter_num = conv_param['filter_num']
         filter_size = conv_param['filter_size']
         filter_pad = conv_param['pad']
@@ -251,21 +251,24 @@ class SimpleConvNet:
         input_size = input_dim[1]
         conv_output_size = (input_size - filter_size + 2*filter_pad) / filter_stride + 1
         pool_output_size = int(filter_num * (conv_output_size/2) * (conv_output_size/2))
+        self.second_conv = second_conv
 
         # 重みの初期化
         self.params = {}
 
-        #畳み込み層を2つ繋げる場合の例
-        #first_filter_num = 10
-        #first_filter_size = 3
-        #self.params['W0'] = weight_init_std * \
-        #                    np.random.randn(first_filter_num, input_dim[0], first_filter_size, first_filter_size)
-        #self.params['b0'] = np.zeros(first_filter_num)
-        #self.params['W1'] = weight_init_std * \
-        #                    np.random.randn(filter_num, first_filter_num, filter_size, filter_size)
-
-        self.params['W1'] = weight_init_std * \
-                            np.random.randn(filter_num, input_dim[0], filter_size, filter_size)
+        #畳み込み層を2つ繋げる場合の例。0番目に畳み込み層を追加
+        if second_conv:
+            first_filter_num = 10
+            first_filter_size = 3
+            self.params['W0'] = weight_init_std * \
+                                np.random.randn(first_filter_num, input_dim[0], first_filter_size, first_filter_size)
+            self.params['b0'] = np.zeros(first_filter_num)
+            self.params['W1'] = weight_init_std * \
+                                np.random.randn(filter_num, first_filter_num, filter_size, filter_size)
+        else:
+            self.params['W1'] = weight_init_std * \
+                                np.random.randn(filter_num, input_dim[0], filter_size, filter_size)
+                                
         self.params['b1'] = np.zeros(filter_num)
         self.params['W2'] = weight_init_std * \
                             np.random.randn(pool_output_size, hidden_size)
@@ -277,9 +280,11 @@ class SimpleConvNet:
         # レイヤの生成
         self.layers = OrderedDict()
         #畳み込み層を2つ繋げる場合の例
-        #self.layers['Conv0'] = ConvolutionLayer(self.params['W0'], self.params['b0'],
-        #                                   conv_param['stride'], 1)
-        #self.layers['Relu0'] = ReluLayer()
+        if second_conv:
+            self.layers['Conv0'] = ConvolutionLayer(self.params['W0'], self.params['b0'],
+                                               conv_param['stride'], 1)
+            self.layers['Relu0'] = ReluLayer()
+
         self.layers['Conv1'] = ConvolutionLayer(self.params['W1'], self.params['b1'],
                                            conv_param['stride'], conv_param['pad'])
         self.layers['Relu1'] = ReluLayer()
@@ -369,7 +374,9 @@ class SimpleConvNet:
         # 設定
         grads = {}
         #畳み込み層を2つ繋げる場合の例
-        #grads['W0'], grads['b0'] = self.layers['Conv0'].dW, self.layers['Conv0'].db
+        if self.second_conv:
+            grads['W0'], grads['b0'] = self.layers['Conv0'].dW, self.layers['Conv0'].db
+
         grads['W1'], grads['b1'] = self.layers['Conv1'].dW, self.layers['Conv1'].db
         grads['W2'], grads['b2'] = self.layers['Affine1'].dW, self.layers['Affine1'].db
         grads['W3'], grads['b3'] = self.layers['Affine2'].dW, self.layers['Affine2'].db
@@ -594,7 +601,8 @@ class Trainer:
             print("=============== Final Test Accuracy ===============")
             print("test acc:" + str(test_acc))
 
-def show():
+#second_conv Trueなら畳み込み層を2層に。Falseなら1層
+def show(_second_conv):
 
     # データの読み込み
     (x_train, t_train), (x_test, t_test) = load_mnist(flatten=False)
@@ -603,12 +611,14 @@ def show():
     x_train, t_train = x_train[:5000], t_train[:5000]
     x_test, t_test = x_test[:1000], t_test[:1000]
     
-    max_epochs = 2
+    #時間がかかってもよいなら20くらいにする
+    max_epochs = 1
     
     network = SimpleConvNet(input_dim=(1, 28, 28),
                         conv_param={'filter_num': 30,
                                     'filter_size': 5, 'pad': 0, 'stride': 1},
-                        hidden_size=100, output_size=10, weight_init_std=0.01)
+                        hidden_size=100, output_size=10, weight_init_std=0.01, second_conv=_second_conv)
+    #一度保存した重みパラメータを流用する場合はコメントアウトを解除
     #network.load_params("params.pkl")
 
     trainer = Trainer(network, x_train, t_train, x_test, t_test,
@@ -617,14 +627,15 @@ def show():
                   evaluate_sample_num_per_epoch=1000)
     trainer.train()
     
-    for n in range (len(network.params['W1'])):
-        print("W1 n=",n)
-        for c in range (len(network.params['W1'][n])):
-            for row in range (len(network.params['W1'][n][c])):
-                for col in range (len(network.params['W1'][n][c][row])):
-                    print(network.params['W1'][n][c][row][col] ,end='  ')
-                print("")
-    # パラメータの保存
+    #フィルタの値の出力をするならコメントアウト
+    #for n in range (len(network.params['W1'])):
+    #    print("W1 n=",n)
+    #    for c in range (len(network.params['W1'][n])):
+    #        for row in range (len(network.params['W1'][n][c])):
+    #            for col in range (len(network.params['W1'][n][c][row])):
+    #                print(network.params['W1'][n][c][row][col] ,end='  ')
+    #            print("")
+    # 学習した重みパラメータの保存
     network.save_params("params.pkl")
     print("Saved Network Parameters!")
     

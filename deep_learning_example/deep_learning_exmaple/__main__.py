@@ -68,7 +68,13 @@ def main():
     input()
 
     print('畳み込み層を使った学習例')
-    cnn.show()
+    cnn.show(False)
+    print('畳み込み層を使った学習例終了。適当な入力で続行')
+    input()
+
+    print('畳み込み層を2つ使った学習例')
+    cnn.show(True)
+    print('畳み込み層を2つ使った学習例終了')
     
     
 
